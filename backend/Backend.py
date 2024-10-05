@@ -45,8 +45,11 @@ def classify_image():
         result = classifier(image)
 
         garbage_label = result[0]['label']
-
+        score = result[0]['score']
         action = ''
+
+        if score < 40:
+                return 'INVALID PHOTO - Please take a clearer photo of a single throwable item.'
 
         if garbage_label == 'battery':
             action = 'BATTERY DISPOSAL'
