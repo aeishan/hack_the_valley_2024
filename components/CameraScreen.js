@@ -1,20 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Camera } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useNavigation } from '@react-navigation/native';
-
+import * as MediaLibrary from 'expo-media-library';
 const CameraScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [photo, setPhoto] = useState(null);
-  const navigation = useNavigation();
+  const [image, setImage] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back)
+  
 
-  useEffect(() => {
-    (async () => {
-      const status  = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === 'granted');
-    })();
-  }, []);
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        
+      </View>
+    );
+  }
 
   const takePicture = async () => {
     if (cameraRef) {
@@ -24,16 +33,12 @@ const CameraScreen = () => {
     }
   };
 
-  if (hasPermission === null) {
-    return <View />;
-  }
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
+
+  
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} ref={ref => setCameraRef(ref)}>
+      <Camera style={styles.camera} facing={facing}>
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={takePicture}>
             <Text style={styles.text}> Take Picture </Text>
