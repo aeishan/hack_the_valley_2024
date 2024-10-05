@@ -1,0 +1,36 @@
+Idea: PROJECT NAME (Bin Buddy)
+
+Take a picture of trash and say if it is recycling, trash, compost, batteries, bottles, chemicals, medicine, clothing, knives/dangerous objects
+Possibly -  
+Find locations nearby to trow things out
+Login to see history of trash and usage
+Track and store the data for ()
+
+
+Technologies:
+App Building, Preferably Mobile - (React Native)
+Camera usage - (Expo CLI)
+Model Training Testing and Building - (Find online if not train on DataBricks)
+Backend - (Python Flask)
+Getting and Cleaning Data - (N/A)
+Location - (Google Map API)
+
+
+
+Classifications:
+() = included in model
+
+MUST HAVE:
+- trash ()
+- recycling ()
+- compost ()
+
+NEEDED FOR LOCATION:
+- battery ()
+- medicine 
+- clothing ()
+- Glass ()
+
+EXTRAS: 
+- chemicals 
+- knives/dangerous objects
