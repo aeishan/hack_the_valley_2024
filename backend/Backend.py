@@ -4,20 +4,22 @@ import os
 from PIL import Image
 
 app = Flask(__name__)
-app.config['UPLOAD FOLDER'] = "./uploads" #Folder to save uploads
+folder_to_upload = os.path.abspath(os.getcwd())  + "./uploads" #Folder to save uploads
+if (os.path.exists(folder_to_upload) == False):
+    os.makedirs(folder_to_upload)
 
 # Garbage classification model
 classifier = pipeline("image-classification", model="watersplash/waste-classification")
 
 # Make sure the upload folder exists
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
+#if not os.path.exists(app.config['UPLOAD_FOLDER']):
+#    os.mkdirs(app.config['UPLOAD_FOLDER'])
 
 @app.route('/', methods = ['GET', 'POST'])
 def register():
     return jsonify({"message" : "Hello World"})
 
-# Endpoint to receive image and classify it
+# Endpoint to receive image and classify itd
 @app.route('/classify', methods=['POST'])
 def classify_image():
     if 'image' not in request.files:
@@ -29,7 +31,7 @@ def classify_image():
 
     if file:
         # Save the uploaded image
-        image_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        image_path = os.path.join(folder_to_upload, file.filename)
         file.save(image_path)
 
         # Open the image file using PIL

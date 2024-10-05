@@ -1,0 +1,4 @@
+python -m venv myenv
+myenv\Scripts\activate
+pip install matplotlib flax tensorflow torch transformers Flask
+pip install tf-keras
