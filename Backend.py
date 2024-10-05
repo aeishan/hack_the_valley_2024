@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['GET', 'POST'])
 def register():
-    return render_template()
+    return jsonify({"Hell0" : "World"})
 
 
 if __name__ == '__main__':
