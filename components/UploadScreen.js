@@ -1,24 +1,48 @@
-import React from 'react';
-import { View, Button, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Image, StyleSheet, Text } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const UploadScreen = ({ navigation }) => {
-  const [image, setImage] = useState(null);
+  useEffect(() => {
+    const openImageGallery = async () => {
+      // Request permission to access the image library
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status === 'granted') {
+        let result = await ImagePicker.launchImageLibraryAsync();
+        if (!result.canceled) {
+          // Pass the image URI directly instead of relying on state
+          navigation.navigate('Result', { imageUri: result.assets[0].uri });
+        } else {
+          navigation.goBack(); // Go back if the user cancels
+        }
+      } else {
+        alert("Permission to access camera roll is required!");
+        navigation.goBack(); // Go back if permission is not granted
+      }
+    };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync();
-    if (!result.cancelled) {
-      setImage(result.uri);
-      navigation.navigate('Result', { imageUri: result.uri });
-    }
-  };
+    openImageGallery();
+  }, [navigation]); // Include `navigation` as a dependency
 
   return (
-    <View>
-      <Button title="Upload Image" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
+    <View style={styles.container}>
+      <Text style={styles.loadingText}>Loading image gallery...</Text>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#f8f8f8',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#555',
+  },
+});
 
 export default UploadScreen;
