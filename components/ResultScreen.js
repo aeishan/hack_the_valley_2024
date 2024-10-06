@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
-const ResultScreen = ({ route }) => {
+const ResultScreen = ({ route, navigation }) => {
   const { imageUri } = route.params;
   
   const [aiResult, setAiResult] = useState(null);  // Store classification result
@@ -41,8 +41,8 @@ const ResultScreen = ({ route }) => {
   // Show loading spinner while the API request is being made
   if (loading) {
     return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#007BFF" />
+      <View style={[styles.container, styles.loadingContainer]}>
+        <ActivityIndicator size="large" color="#fff" />
         <Text style={styles.loadingText}>Analyzing image...</Text>
       </View>
     );
@@ -51,7 +51,7 @@ const ResultScreen = ({ route }) => {
   // Show error message if something went wrong
   if (error) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, styles.errorContainer]}>
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
@@ -63,12 +63,16 @@ const ResultScreen = ({ route }) => {
       <Image source={{ uri: imageUri }} style={styles.image} />
       
       {/* Display the classification and action */}
-      <Text style={styles.resultText}>
-        AI Classification: {aiResult}
-      </Text>
-      <Text style={styles.actionText}>
-        Suggested Action: {action}
-      </Text>
+      <Text style={styles.resultTitle}>Garbage Type</Text>
+      <Text style={styles.resultText}>{aiResult}</Text>
+
+      <Text style={styles.resultTitle}>Suggested Action</Text>
+      <Text style={styles.actionText}>{action}</Text>
+
+      {/* Home Button */}
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
+        <Text style={styles.buttonText}>Go to Home</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -80,31 +84,102 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f0f0f5',  // Light background color
   },
   image: {
     width: 300,
     height: 300,
-    borderRadius: 10,
-    borderWidth: 2,
+    borderRadius: 20,
+    borderWidth: 3,
     borderColor: '#007BFF',
-    marginBottom: 20,
+    marginBottom: 30,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.8,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  resultTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#007BFF',
+    marginBottom: 10,
+    textTransform: 'uppercase',
+    textAlign: 'center',
+    letterSpacing: 1,
   },
   resultText: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
     textAlign: 'center',
+    backgroundColor: '#007BFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  actionText: {
+    fontSize: 22,
+    color: '#fff',
+    fontWeight: '600',
+    textAlign: 'center',
+    backgroundColor: '#28A745',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
   },
   loadingText: {
-    fontSize: 16,
+    fontSize: 18,
     marginTop: 20,
-    color: '#333',
+    color: '#fff',
   },
   errorText: {
-    fontSize: 18,
-    color: 'red' 
-  }
+    fontSize: 20,
+    color: '#fff',
+    textAlign: 'center',
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  loadingContainer: {
+    backgroundColor: '#007BFF',
+  },
+  errorContainer: {
+    backgroundColor: '#FF4C4C',
+  },
+  button: {
+    marginTop: 30,
+    width: '80%',
+    height: 60,  // Increased button height
+    backgroundColor: '#FFD700',  // Yellow button
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.5,
+    shadowRadius: 5,
+    elevation: 8,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#000',  // Black text to contrast with yellow button
+  },
 });
 
 export default ResultScreen;
