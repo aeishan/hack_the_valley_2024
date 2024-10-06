@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 
+const capitalizeFirstLetter = (string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 const ResultScreen = ({ route, navigation }) => {
   const { imageUri } = route.params;
   
@@ -64,7 +68,7 @@ const ResultScreen = ({ route, navigation }) => {
       
       {/* Display the classification and action */}
       <Text style={styles.resultTitle}>Garbage Type</Text>
-      <Text style={styles.resultText}>{aiResult}</Text>
+      <Text style={styles.resultText}>{capitalizeFirstLetter(aiResult)}</Text>
 
       <Text style={styles.resultTitle}>Suggested Action</Text>
       <Text style={styles.actionText}>{action}</Text>
