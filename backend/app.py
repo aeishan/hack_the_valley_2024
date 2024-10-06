@@ -2,14 +2,17 @@ from flask import Flask,jsonify, render_template, url_for, flash, redirect, requ
 from transformers import pipeline
 import os
 from PIL import Image
+from io import BytesIO
+import base64
 
 app = Flask(__name__)
-folder_to_upload = os.path.abspath(os.getcwd())  + "./uploads" #Folder to save uploads
-if (os.path.exists(folder_to_upload) == False):
-    os.makedirs(folder_to_upload)
+
 
 # Garbage classification model
+print("Loading the Hugging Face model...")
 classifier = pipeline("image-classification", model="watersplash/waste-classification")
+print("Model loaded successfully!")
+
 
 # Make sure the upload folder exists
 #if not os.path.exists(app.config['UPLOAD_FOLDER']):
@@ -26,24 +29,18 @@ def classify_image():
         return jsonify({"error": "No image file provided"}), 400
 
     file = request.files['image']
+
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
-    if file:
-        # Save the uploaded image
-        image_path = os.path.join(folder_to_upload, file.filename)
-        file.save(image_path)
-
-        # Open the image file using PIL
-        image = Image.open(image_path)
+    try:
+        # Open the image using PIL
+        image = Image.open(file)
 
         # Apply your waste classification pipeline to the image
-        # Result Format:
-        # ([{'label': 'metal', 'score': 0.9994459748268127}, {'label': 'clothes', 'score': 0.4722229540348053}, 
-        # {'label': 'plastic', 'score': 0.41513681411743164}, {'label': 'shoes', 'score': 0.3249179422855377}, 
-        # {'label': 'cardboard', 'score': 0.32456502318382263}])
         result = classifier(image)
 
+        # Get the highest confidence classification label
         garbage_label = result[0]['label']
 
         action = ''
@@ -63,7 +60,9 @@ def classify_image():
         # Return the classification result
         return jsonify({"classification": result}, {"action" : action})
 
-    return jsonify({"error": "File could not be processed"}), 500
+    except Exception as e:
+        return jsonify({"error": f"Error processing the image: {str(e)}"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
+
