@@ -3,7 +3,6 @@ from transformers import pipeline
 import os
 from PIL import Image
 from io import BytesIO
-import base64
 
 app = Flask(__name__)
 
@@ -12,7 +11,7 @@ app = Flask(__name__)
 print("Loading the Hugging Face model...")
 classifier = pipeline("image-classification", model="watersplash/waste-classification")
 print("Model loaded successfully!")
-print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC")
+
 
 
 # Make sure the upload folder exists
@@ -26,31 +25,33 @@ def register():
 # Endpoint to receive image and classify itd
 @app.route('/classify', methods=['POST', "GET"])
 def classify_image():
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+    
     if 'image' not in request.files:
         return jsonify({"error": "No image file provided"}), 400
 
     file = request.files['image']
 
-    print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+    
     print(file.filename)
-    print("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+    
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
 
     try:
         # Open the image using PIL
         image = Image.open(BytesIO(file.read()))
-        image.show()
+        
 
         # Apply your waste classification pipeline to the image
         result = classifier(image)
-        print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
-        print(result[0]['label'])
-        print("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY")
+        
+        # print(result[0]['label'])
+        
 
         # Get the highest confidence classification label
         garbage_label = result[0]['label']
+        score  = result[0]['score']
+        
 
         action = ''
 
@@ -65,13 +66,16 @@ def classify_image():
         elif garbage_label == 'trash':
             action = 'GENERAL WASTE'
 
-
+        if score < 0.5:
+            garbage_label = "Not identifiable"
+            action= "Take a better picture"
+        
         # Return the classification result
-        return jsonify({"classification": garbage_label}, {"action" : action})
+        return jsonify({"classification": garbage_label, "action": action})
+
 
     except Exception as e:
         return jsonify({"error": f"Error processing the image: {str(e)}"}), 500
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
-

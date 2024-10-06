@@ -4,6 +4,7 @@ import axios from 'axios';
 
 const ResultScreen = ({ route }) => {
   const { imageUri } = route.params;
+  
   const [aiResult, setAiResult] = useState(null);  // Store classification result
   const [action, setAction] = useState(null);      // Store action result
   const [loading, setLoading] = useState(true);    // Store loading state
