@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, Image, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
 import axios from 'axios';
 
 const ResultScreen = ({ route }) => {
   const { imageUri } = route.params;
-  const [aiResult, setAiResult] = useState(null);  // Store AI result
+  const [aiResult, setAiResult] = useState(null);  // Store classification result
+  const [action, setAction] = useState(null);      // Store action result
   const [loading, setLoading] = useState(true);    // Store loading state
   const [error, setError] = useState(null);        // Store error state
 
@@ -18,10 +19,13 @@ const ResultScreen = ({ route }) => {
       });
 
       try {
-        const response = await axios.post('http://127.0.0.1:5000/classify', formData, {
+        const response = await axios.post('http://192.168.62.106:5000/classify', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
+          timeout: 60000,  // Increase timeout to 60 seconds
         });
-        setAiResult(response.data);   // Save the AI result
+        // Extract the classification and action from the response
+        setAiResult(response.data.classification);  // Store the classification (e.g., plastic)
+        setAction(response.data.action);  // Store the action (e.g., RECYCLE)
       } catch (error) {
         console.error(error);
         setError('Failed to get AI result');
@@ -50,20 +54,28 @@ const ResultScreen = ({ route }) => {
         <Text style={styles.errorText}>{error}</Text>
       </View>
     );
-  }
+  }   
 
-  // Show the image and AI result
+  // Show the image and AI result in a scrollable view
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
       <Image source={{ uri: imageUri }} style={styles.image} />
-      <Text style={styles.resultText}>AI Result: {aiResult ? JSON.stringify(aiResult) : 'No result'}</Text>
-    </View>
+      
+      {/* Display the classification and action */}
+      <Text style={styles.resultText}>
+        AI Classification: {aiResult}
+      </Text>
+      <Text style={styles.actionText}>
+        Suggested Action: {action}
+      </Text>
+    </ScrollView>
   );
 };
 
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
@@ -81,6 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
+    textAlign: 'center',
   },
   loadingText: {
     fontSize: 16,
@@ -89,8 +102,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: 'red',
-  },
+    color: 'red' 
+  }
 });
 
 export default ResultScreen;
