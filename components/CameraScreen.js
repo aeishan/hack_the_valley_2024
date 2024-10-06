@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, Alert, TouchableOpacity } from 'react-na
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import Slider from '@react-native-community/slider';
-//import Button from './components/Button'
+import Button from './Button'
 
 export default function CameraScreen() {
   
