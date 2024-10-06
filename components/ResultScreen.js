@@ -68,14 +68,14 @@ const ResultScreen = ({ route, navigation }) => {
       
       {/* Display the classification and action */}
       <Text style={styles.resultTitle}>Garbage Type</Text>
-      <Text style={styles.resultText}>{capitalizeFirstLetter(aiResult)}</Text>
+      <Text style={styles.resultText}>{aiResult.toUpperCase()}</Text>
 
       <Text style={styles.resultTitle}>Suggested Action</Text>
       <Text style={styles.actionText}>{action}</Text>
 
       {/* Home Button */}
       <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.buttonText}>Go to Home</Text>
+        <Text style={styles.buttonText}>GO TO HOME</Text>
       </TouchableOpacity>
     </ScrollView>
   );
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#f0f0f5',  // Light background color
+    backgroundColor: '#d7fff7',  // Light background color
   },
   image: {
     width: 300,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   actionText: {
-    fontSize: 22,
+    fontSize: 30,
     color: '#fff',
     fontWeight: '600',
     textAlign: 'center',
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF4C4C',
   },
   button: {
-    marginTop: 30,
-    width: '80%',
+    marginTop: 40,
+    width: '40%',
     height: 60,  // Increased button height
     backgroundColor: '#FFD700',  // Yellow button
     borderRadius: 10,
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: '900',
     color: '#000',  // Black text to contrast with yellow button
   },
 });
