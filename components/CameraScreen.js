@@ -6,13 +6,13 @@ import * as MediaLibrary from 'expo-media-library';
 import Slider from '@react-native-community/slider';
 import Button from './Button'
 
-export default function CameraScreen() {
+export default function CameraScreen({ navigation }) {
   
     const [cameraPermission, requestCameraPermission] = useCameraPermissions();
     const [mediaLibraryPermissionResponse, requestMediaLibraryPermission] = MediaLibrary.usePermissions();
     const [cameraProps, setCameraProps] = useState({
         zoom: 0,
-        facing: 'front',
+        facing: 'back',
         flash: 'on',
         animateShutter: false,
         enableTorch: false
@@ -79,26 +79,36 @@ export default function CameraScreen() {
           try {
               const picture = await cameraRef.current.takePictureAsync();
               setImage(picture.uri);
+              navigation.navigate('Result', { imageUri: picture.uri });
           } catch (err) {
             console.log('Error while taking the picture : ', err);
           }
       }
   }
 
+
   //function to save the picture using MediaLibrary
-  const savePicture = async() => {
+  const savePicture = async() => { 
       if(image) {
           try {
               const asset = await MediaLibrary.createAssetAsync(image);
               const assetInfo = await MediaLibrary.getAssetInfoAsync(asset.id);
               Alert.alert('Photo saved!', image);
               setImage(null);
-              getLastSavedImage();
+              const assets = await MediaLibrary.getAssetsAsync({
+                first: 1, // Get only the first (most recent) asset
+                mediaType: 'photo', // Filter for only photos
+                sortBy: [[MediaLibrary.SortBy.creationTime, false]], // Sort by creation time in descending order
+              });
+              const lastImage = assets.assets[0]
+              navigation.navigate('Result', { imageUri: lastImage.assets[0].uri });
+
           } catch (err) {
               console.log('Error while saving the picture : ', err);
           }
       }
   }
+
 
   //function to get the last saved image from the 'DCIM' album created in the gallery by expo
   const getLastSavedImage = async() => {
