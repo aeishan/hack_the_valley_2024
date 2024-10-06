@@ -1,112 +1,74 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { Camera } from 'expo-camera';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { useNavigation } from '@react-navigation/native';
+import { StatusBar } from 'expo-status-bar';
+import { CameraView, useCameraPermissions } from 'expo-camera';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import * as MediaLibrary from 'expo-media-library';
-
-const CameraScreen = () => {
-  const [hasPermission, setHasCameraPermission] = useState(null);
-  const [image, setImage] = useState(null);
-  //const [type, setType] = useState(Camera.Constants.Type.back)
-  //const[flash, setFlash] = useState(Camera.Constants.FlashMode.off);
-  const camerRef = useRef(null);
-
-  useEffect(() => {
-  (async () => {
-    MediaLibrary.requestPermissionsAsync();
-    const cameraStatus = await Camera.requestCameraPermissionsAsync();
-    setHasCameraPermission(cameraStatus.status === 'granted');
-  })();
-}, [])
-
-  
-
-  // if (!hasPermission) {
-  //   // Camera permissions are still loading.
-  //   return <View />;
-  // }
-  
-
-  
-  return (
-    <View style={styles.container}>
-      <Camera 
-        style={styles.camera}
-        //type={type}
-        //flashMode={flash}
-        ref={camerRef}
-        >
-          <Text>hello</Text>
-
-        </Camera>
-      
-    </View>
-  );
-  
-
-  // const takePicture = async () => {
-  //   if (cameraRef) {
-  //     const photoData = await cameraRef.takePictureAsync();
-  //     setPhoto(photoData.uri);
-  //     navigation.navigate('Result', { photoUri: photoData.uri });
-  //   }
-  // };
+import Slider from '@react-native-community/slider';
+//import Button from './components/Button';
 
 
-  
 
-  return (
-    <View style={styles.container}>
-      <Camera style={styles.camera} facing={facing} ref={cameraRef}>
-      </Camera>
-      <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={takePicture}>
-            <Text style={styles.text}> Take Picture </Text>
-          </TouchableOpacity>
+export default function CameraScreen() {
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
+  const [mediaLibraryPermissionResponse, requestMediaLibraryPermissions] = MediaLibrary.usePermissions();
+
+  if (!cameraPermission || !mediaLibraryPermissionResponse){
+    // permissions are still loading
+    return <View/>
+  }
+
+  if (!cameraPermission.granted || mediaLibraryPermissionResponse.status !== 'granted'){
+    // permissions are not granted yet
+    return(
+      <View style={styles.container}>
+        <Text>We need your permission to continue</Text>
+        <TouchableOpacity style = {styles.button} onPress={() => {
+            requestCameraPermission();
+            requestMediaLibraryPermissions();
+        }}>
+            <Text style={styles.buttonText}>Grant permissions</Text>
+        </TouchableOpacity>
       </View>
-      {photo && <Image source={{ uri: photo }} style={styles.preview} />}
+    )
+
+  }
+  
+
+  
+  return (
+    <View style={styles.container}>
+      <View style={styles.topControlsContainer}>
+        <Text style={{color:'white'}}>Top Controls</Text>
+      </View>
+      <CameraView style={styles.camera} />
     </View>
   );
-};
+}
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffff',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: '#fff',
+    marginTop: 30,
   },
+  topControlsContainer: {
+    height: 100,
+    backgroundColor: 'black',
+    flexDirection: 'row'
+  },
+  button: {
+    backgroundColor: 'blue',
+    padding: 10,
+    margin: 10,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  }
 });
-//   },
-//   camera: {
-//     flex: 1,
-//     justifyContent: 'flex-end',
-//   },
-//   buttonContainer: {
-//     flex: 0.1,
-//     backgroundColor: 'transparent',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   button: {
-//     padding: 10,
-//     backgroundColor: 'white',
-//     borderRadius: 5,
-//   },
-//   text: {
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//   },
-//   preview: {
-//     width: 100,
-//     height: 100,
-//     position: 'absolute',
-//     bottom: 10,
-//     right: 10,
-//     borderWidth: 2,
-//     borderColor: 'white',
-//   },
-// });
-
-export default CameraScreen;
