@@ -20,9 +20,9 @@ const ResultScreen = ({ route }) => {
       });
 
       try {
-        const response = await axios.post('http://172.20.10.3:5000/classify', formData, {
+        const response = await axios.post('https://recycleapi.adaptable.app/classify', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
-          timeout: 60000,  // Increase timeout to 60 seconds
+          timeout: 120000,  // Increase timeout to 60 seconds
         });
         // Extract the classification and action from the response
         setAiResult(response.data.classification);  // Store the classification (e.g., plastic)
