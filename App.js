@@ -42,7 +42,7 @@ export default function App() {
         <Stack.Screen 
           name="Home" 
           component={HomeScreen} 
-          options={{ title: 'Smart Recycling Bin' }} 
+          options={{ title: 'Trash Ninja' }} 
         />
         <Stack.Screen 
           name="Camera" 
