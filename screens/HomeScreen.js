@@ -25,7 +25,7 @@ const HomeScreen = ({ navigation }) => {
         source={require('../assets/logo.jpg')}  // Adjust the path according to your folder structure
         style={styles.logo} 
       />
-      <Text style={styles.title}>Trash Ninja</Text>
+      <Text style={styles.title}>TRASH NINJA</Text>
 
       <Text style={styles.missionText}>
         Our Mission: Help the planet by sorting waste correctly.
@@ -73,11 +73,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 38,
-    fontWeight: '800',  
+    fontWeight: '400',  
     color: '#000',  // Black text
     marginBottom: 40,  
     textAlign: 'center',
     letterSpacing: 2,
+    fontFamily: 'ProtestStrike-Regular',  // Apply the custom font here
   },
   missionText: {
     fontSize: 22,  
@@ -86,7 +87,8 @@ const styles = StyleSheet.create({
     marginBottom: 70, 
     color: '#000',  // Black text
     paddingHorizontal: 25,
-    lineHeight: 32, 
+    lineHeight: 32,
+    fontFamily: 'ProtestStrike-Regular',  // Apply the custom font here
   },
   button: {
     backgroundColor: '#4CAF50',  // Green button
