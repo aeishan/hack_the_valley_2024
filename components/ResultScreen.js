@@ -20,7 +20,7 @@ const ResultScreen = ({ route }) => {
       });
 
       try {
-        const response = await axios.post('http://172.20.10.3:5000/classify', formData, {
+        const response = await axios.post('http://192.168.62.106:5000/classify', formData, {
           headers: { 'Content-Type': 'multipart/form-data' },
           timeout: 60000,  // Increase timeout to 60 seconds
         });
